@@ -199,8 +199,6 @@ func_state DIO_init()
 	return state;
 }
 
-
-
 func_state DIO_write(pintype device, uint8 value)
 {
     func_state state;
@@ -262,7 +260,6 @@ func_state DIO_write(pintype device, uint8 value)
     
 	return state;
 }
-
 
 func_state DIO_read(pintype device, uint8* result)
 {

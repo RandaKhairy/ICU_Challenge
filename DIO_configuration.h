@@ -13,7 +13,7 @@
 
 #include "std_types.h"
 
-typedef enum {motor0, motor1, seg0, seg1, seg2, seg3, led_flag, NUM_OF_PINS} pintype;
+typedef enum {LED0,BUZZER,test1,test2,test3, NUM_OF_PINS} pintype;
 
 #define PORT_A 0
 #define PORT_B 1
@@ -54,6 +54,5 @@ typedef struct
 }DIO_cnfig;
 
 extern DIO_cnfig DIO_cnfig_list [NUM_OF_PINS];
-
 
 #endif /* DIO_CONFIGURATION_H_ */
