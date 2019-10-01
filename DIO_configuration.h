@@ -13,7 +13,7 @@
 
 #include "std_types.h"
 
-typedef enum {motor0, motor1, seg0, seg1, seg2, seg3, led_flag, NUM_OF_PINS} pintype;
+typedef enum {trigger, echo, test_led, NUM_OF_PINS} pintype;
 
 #define PORT_A 0
 #define PORT_B 1

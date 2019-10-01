@@ -9,7 +9,10 @@
 #define ULTRASONIC_H_
 
 #include "std_types.h"
+#include "DIO.h"
+#include "TIMER.h"
+#include "ICU.h"
 
-uint8 ULTRA_read();
+void ULTRA_read(void (*ptr)(uint16));
 
 #endif /* ULTRASONIC_H_ */

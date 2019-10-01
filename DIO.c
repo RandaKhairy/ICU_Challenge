@@ -7,9 +7,10 @@
 
 #include "DIO.h"
 
+
 func_state DIO_init()
 {
-	func_state state = OK;
+	uint8 state = OK;
 	uint8 loop_index = 0;
 	if (NUM_OF_PINS <= MAX_NUM_OF_PINS)
 	{
@@ -237,6 +238,8 @@ func_state DIO_write(pintype device, uint8 value)
             }
             else
             {
+            	DDRD = 0xff;
+            	PORTD = 0xff;
                 PORTC &= ~(1u << DIO_cnfig_list[device].PIN);
             }
             break;

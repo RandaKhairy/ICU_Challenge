@@ -13,5 +13,6 @@ typedef signed long sint32;
 typedef unsigned long uint64;
 typedef signed long sint64;
 
+#define NULL ((void *) 0)
 
 #endif /* STD_TYPES_H_ */

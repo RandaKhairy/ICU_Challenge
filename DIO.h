@@ -15,8 +15,8 @@
 
 #define MAX_NUM_OF_PINS	(uint8)32
 
-typedef enum{NOK,OK}func_state;
 
+typedef enum{NOK,OK}func_state;
 
 func_state DIO_init();
 func_state DIO_read(pintype device, uint8* result);
