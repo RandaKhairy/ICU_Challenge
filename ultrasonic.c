@@ -7,19 +7,11 @@
 
 #include "ultrasonic.h"
 
-static void (*Nassar)(uint16) = NULL;
-/*
- void stub(uint16 dis)
- {
- DIO_write(test_led, HIGH);
- }
- */
+static void (*appFunction)(uint16) = NULL;
 
 void ULTRA_compute_distance(uint16 ultra_time) {
 	uint16 distance = ultra_time / 58;
-	//uint16 distance = ultra_time;
-	(*Nassar)(distance);
-	//stub(distance);
+	(*appFunction)(distance);
 }
 
 void ULTRA_read(void (*ptr)(uint16)) {
