@@ -15,7 +15,7 @@ void ULTRA_compute_distance(uint16 ultra_time) {
 }
 
 void ULTRA_read(void (*ptr)(uint16)) {
-	Nassar = ptr;
+	appFunction = ptr;
 	Icu_setCallBack(ULTRA_compute_distance);
 	PULSE_start();
 }
