@@ -7,18 +7,17 @@
 
 #include "PWM.h"
 #include "DIO.h"
-uint8 value=1;
+
 
 void Phase_Correct_PWM(double duty_cycle)
 {
 	TCNT1 = 0;		/* Set timer1 initial count to zero */
 
-	OCR1A= (256*(duty_cycle/100));
-	OCR1B= (256*(duty_cycle/100));
+	OCR1A= (255*(duty_cycle/100));
+	OCR1B= (255*(duty_cycle/100));
 	//OCR1A = duty_cycle; /* Set the compare value */
 
-	DIO_write(testled, value);
-	value^=1;
+
 	/* Configure timer control register TCCR1A
      * 1. Clear OC1A/OC1B on compare match (non inverting mode) COM1A1=1 COM1A0=0  || COM1B=0 COM1B1=0
      * 2. FOC1A=0 FOC1B=0 because these bits are only active in case non-pwm mode
