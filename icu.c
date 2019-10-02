@@ -8,56 +8,38 @@
 
 static volatile void (*g_callBackPtr)(uint16) = NULL_PTR;
 
-uint8 g_edgeCount = 0;
-uint16 g_timeHigh = 0;
-uint16 g_timePeriod = 0;
-uint16 g_timePeriodPlusHigh = 0;
+uint8 edgeCount = 0;
+uint16 timeHigh = 0;
 
-void APP_edgeProcessing(void) {
-	g_edgeCount++;
+void edgeProcessing(void) {
 
-	LCD_clearScreen();
-	LCD_displayString("g_edgeCount = ");
-	LCD_intgerToString(g_edgeCount);
+	edgeCount++;
 
-	if (g_edgeCount == 1) {
+	if (edgeCount == 1) {
 
-		TCNT1 = 0;
-		ICR1 = 0;
+		TCNT1H = 0;
+		TCNT1L = 0;
+		ICR1H = 0;
+		ICR1L = 0;
 
 		Icu_setEdgeDetectionType(FALLING);
 
-	} else if (g_edgeCount == 2) {
+	} else if (edgeCount == 2) {
 
-		g_timeHigh = ICR1;
-
+		timeHigh = (ICR1L | (ICR1H << 8));
 		Icu_setEdgeDetectionType(RISING);
-
-	} else if (g_edgeCount == 3) {
-
-		g_timePeriod = ICR1;
-
-		Icu_setEdgeDetectionType(FALLING);
-
-	} else if (g_edgeCount == 4) {
-
-		g_timePeriodPlusHigh = ICR1;
-		TCNT1 = 0;
-		Icu_setEdgeDetectionType(RISING);
-
-		//Icu_DeInit(); /* Disable ICU Driver */
-		g_edgeCount = 0;
+		edgeCount = 0;
 
 		if (g_callBackPtr != NULL_PTR) {
 
-			(*g_callBackPtr)((g_timeHigh / 100));
+			(*g_callBackPtr)((timeHigh / 1000));
 		}
 	}
 }
 
-ISR(TIMER1_CAPT_vect) {
+ISR( TIMER1_CAPT_vect) {
 
-	APP_edgeProcessing();
+	edgeProcessing();
 
 }
 
@@ -72,16 +54,16 @@ void Icu_init(const Icu_ConfigType *Config_Ptr) {
 	 * of TCCR1B Register
 	 */
 	TCCR1B = (TCCR1B & 0xF8) | (Config_Ptr->clock);
-	/*
-	 * insert the required edge type in ICES1 bit in TCCR1B Register
-	 */
-	TCCR1B = (TCCR1B & 0xBF) | ((Config_Ptr->edge) << 6);
+
+	TCCR1B |= (1 << ICES1);
 
 	/* Initial Value for Timer1 */
-	TCNT1 = 0;
+	TCNT1H = 0;
+	TCNT1L = 0;
 
 	/* Initial Value for the input capture register */
-	ICR1 = 0;
+	ICR1H = 0;
+	ICR1L = 0;
 
 	/* Enable the Input Capture interrupt to generate an interrupt when edge is detected on ICP1/PD6 pin */
 	TIMSK |= (1 << TICIE1);
@@ -98,5 +80,10 @@ void Icu_setEdgeDetectionType(const Icu_EdgeType a_edgeType) {
 	/*
 	 * insert the required edge type in ICES1 bit in TCCR1B Register
 	 */
-	TCCR1B = (TCCR1B & 0xBF) | (a_edgeType << TCCR1B);
+
+	if (a_edgeType == RISING) {
+		TCCR1B |= (1 << ICES1);
+	} else {
+		TCCR1B &= (~(1 << ICES1));
+	}
 }
