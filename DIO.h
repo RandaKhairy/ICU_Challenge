@@ -13,6 +13,7 @@
 #include "DIO_configuration.h"
 #include "std_types.h"
 
+
 #define MAX_NUM_OF_PINS	(uint8)32
 
 

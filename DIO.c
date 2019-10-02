@@ -10,11 +10,11 @@
 
 func_state DIO_init()
 {
-	uint8 state = OK;
+	uint8 state = OK; // @suppress("Symbol is not resolved")
 	uint8 loop_index = 0;
 	if (NUM_OF_PINS <= MAX_NUM_OF_PINS)
 	{
-		for(;loop_index < NUM_OF_PINS; loop_index++)
+		for(;loop_index < NUM_OF_PINS; loop_index++) // @suppress("Symbol is not resolved")
 		{
 			DIO_cnfig_list[loop_index].IS_initialized = INITIALIZED;
 			switch(DIO_cnfig_list[loop_index].PORT)
