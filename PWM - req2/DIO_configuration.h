@@ -13,9 +13,7 @@
 
 #include "std_types.h"
 
-//typedef enum {motors_enable, motor1_c0, motor1_c1,  motor2_c0, motor2_c1, led_flag0, led_flag1,pwm , NUM_OF_PINS} pintype;
-
-typedef enum {motor1_c0,motor1_c1,motors_enable1,motor2_c0,motor2_c1,motors_enable2,NUM_OF_PINS} pintype;
+typedef enum {motor1_c0,motor1_c1,motors_enable1,motor2_c0,motor2_c1,motors_enable2, NUM_OF_PINS} pintype;
 
 #define PORT_A 0
 #define PORT_B 1
@@ -56,6 +54,5 @@ typedef struct
 }DIO_cnfig;
 
 extern DIO_cnfig DIO_cnfig_list [NUM_OF_PINS];
-
 
 #endif /* DIO_CONFIGURATION_H_ */

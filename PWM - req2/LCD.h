@@ -53,6 +53,6 @@ void LCD_displayString(uint8 string[]);
 //void LCD_displayStringRowColumn(uint8 string[], uint8 row, uint8 column);
 //void LCD_gotoRowColumn(uint8 LINE, uint8 COLUMN);
 void LCD_clear(void);
-void LCD_Write_Integer_Number(sint32 number);
+void LCD_Write_Integer_Number(uint16 number);
 
 #endif /* LCD_H_ */

@@ -17,7 +17,6 @@
 #include "PWM.h"
 
 
-
 void ULTRA_read(void (*ptr)(uint16));
 
 void obtscales_avoidence(uint16 dis)

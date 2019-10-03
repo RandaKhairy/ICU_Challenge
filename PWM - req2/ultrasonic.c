@@ -16,6 +16,8 @@ static void (*Nassar)(uint16) = NULL;
  */
 
 void ULTRA_compute_distance(uint16 ultra_time) {
+	/*LCD_clear();
+	LCD_Write_Integer_Number(ultra_time);*/
 	uint16 distance = ultra_time / 58;
 	//uint16 distance = ultra_time;
 	(*Nassar)(distance);
@@ -25,14 +27,14 @@ void ULTRA_compute_distance(uint16 ultra_time) {
 void ULTRA_read(void (*ptr)(uint16)) {
 	Nassar = ptr;
 	Icu_setCallBack(ULTRA_compute_distance);
+
 	PULSE_start();
+
 }
 
 void ULTRA_init(void) {
 
-	Icu_ConfigType Icu_Config = { F_CPU_8, RISING };
-	Icu_init(&Icu_Config);
-
+	Icu_init();
 	PULSE_init();
 }
 
