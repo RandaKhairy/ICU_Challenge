@@ -3,7 +3,7 @@
  *
  * Created: 10/2/2019 10:21:06 AM
  *  Author: Omar Sha3rawy
- */ 
+ */
 
 #include "motor.h"
 #include "DIO.h"
@@ -41,7 +41,7 @@ void MOTOR_CarRight(uint16 duration)
 	MOTOR_stop(PAIR1);
 	MOTOR_stop(PAIR2);
 	_delay_ms(1000);
-	
+
 	MOTOR_forward(PAIR1);
 	MOTOR_forward(PAIR2);
 }

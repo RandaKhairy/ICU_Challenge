@@ -1,18 +1,22 @@
 /*
- * Icu.h
+ * ICU.h
  *
- *  Created on: Oct 1, 2019
- *      Author: PeterKleber
+ *  Created on: Oct 2, 2019
+ *      Author: Mohammed
  */
+
 #ifndef ICU_H_
 #define ICU_H_
 
-#include "std_types.h"
-//#include "common_macros.h"
-//#include "register_lib.h"
-#include <avr/io.h>
-#include <util/delay.h>
+#include <avr/io.h>		/* Include AVR std. library file */
 #include <avr/interrupt.h>
+#include <util/delay.h>
+#include "DIO.h"
+//#include "lcd.h"
+
+#include "std_types.h"
+
+extern uint8 EDGE;
 
 typedef enum {
 	NO_CLOCK, F_CPU_CLOCK, F_CPU_8, F_CPU_64, F_CPU_256, F_CPU_1024
@@ -27,10 +31,14 @@ typedef struct {
 	Icu_EdgeType edge;
 } Icu_ConfigType;
 
-void Icu_init(const Icu_ConfigType *Config_Ptr);
 
-void Icu_setCallBack(void (*a_ptr)(uint16));
+void Icu_setCallBack(void (*a_ptr)(uint16));  /// dummy
+void Icu_init(); //// dummy
 
-void Icu_setEdgeDetectionType(const Icu_EdgeType edgeType);
+void Timer2_init_normal_mode(void);
+
+extern void INT2_Init_Raising_FirstTime(void);
+
+extern void ICU(void);
 
 #endif /* ICU_H_ */

@@ -1,86 +1,102 @@
 /*
- * Icu.c
+ * ICU.c
  *
- *  Created on: Oct 1, 2019
- *      Author: PeterKleber
+ *  Created on: Oct 2, 2019
+ *      Author: Mohammed
  */
-#include "icu.h"
+#include "ICU.h"
 
+static volatile uint8 EXINT = 0;
 static volatile void (*g_callBackPtr)(uint16) = NULL_PTR;
 
-uint8 edgeCount = 0;
-uint16 timeHigh = 0;
-
-void edgeProcessing(void) {
-	edgeCount++;
-
-	if (edgeCount == 1) {
-
-		TCNT1H = 0;
-		TCNT1L = 0;
-		ICR1H = 0;
-		ICR1L = 0;
-
-		Icu_setEdgeDetectionType(FALLING);
-
-	} else if (edgeCount == 2) {
-
-		timeHigh = (ICR1L | (ICR1H << 8));
-		Icu_setEdgeDetectionType(RISING);
-		edgeCount = 0;
-
-		if (g_callBackPtr != NULL_PTR) {
-			(*g_callBackPtr)((timeHigh));
-		}
-	}
-}
-
-ISR( TIMER1_CAPT_vect){
-	edgeProcessing();
-
-}
-
-void Icu_init(const Icu_ConfigType *Config_Ptr) {
-
-	DDRD &= ~(1 << PD6);
-
-	/* Timer1 always operates in Normal Mode */
-	TCCR1A = (1 << FOC1A) | (1 << FOC1B);
-	/*
-	 * insert the required clock value in the first three bits (CS10, CS11 and CS12)
-	 * of TCCR1B Register
-	 */
-	TCCR1B = (TCCR1B & 0xF8) | (Config_Ptr->clock);
-
-	TCCR1B |= (1 << ICES1);
-
-	/* Initial Value for Timer1 */
-	TCNT1H = 0;
-	TCNT1L = 0;
-
-	/* Initial Value for the input capture register */
-	ICR1H = 0;
-	ICR1L = 0;
-
-	/* Enable the Input Capture interrupt to generate an interrupt when edge is detected on ICP1/PD6 pin */
-	TIMSK |= (1 << TICIE1);
-	/* Enable Global Interrupt I-Bit */
-	SREG |= (1 << 7);
-}
+uint8 EDGE = 0;
 
 void Icu_setCallBack(void (*a_ptr)(uint16)) {
 	/* Save the address of the Call back function in a global variable */
 	g_callBackPtr = a_ptr;
 }
 
-void Icu_setEdgeDetectionType(const Icu_EdgeType a_edgeType) {
-	/*
-	 * insert the required edge type in ICES1 bit in TCCR1B Register
-	 */
+/* External INT2 Interrupt Service Routine */
+ISR(INT2_vect) {
 
-	if (a_edgeType == RISING) {
-		TCCR1B |= (1 << ICES1);
-	} else {
-		TCCR1B &= (~(1 << ICES1));
+	if (EDGE == 0) {
+		//DIO_write(testled1,HIGH);
+		EXINT = 1;
+		ICU();
+		//DIO_write(testled1,HIGH);
+	} else if (EDGE == 1) {
+		EXINT = 1;
+		ICU();
+		//	DIO_write(testled2,HIGH);
 	}
+}
+
+void Timer2_init_normal_mode(void) {
+	TCNT2 = 0; //timer initial value
+	TCCR2 |= (1 << FOC2) | (1 << CS21) | (1 << CS22) | (1 << CS20); //
+	//TCCR2 &= ~((1 << CS22) | (1 << CS20));
+	//TCCR2 |= ((1 << CS22) | (1 << CS21));
+
+}
+
+static void Timer2_Clear(void) {
+	TCNT2 = 0; //timer initial value
+}
+
+void INT2_Init_Raising_FirstTime(void) {
+
+	SREG &= ~(1 << 7);      // Disable interrupts by clearing I-bit
+	GICR &= ~(1 << INT2);
+
+	DDRB &= (~(1 << PB2));   // Configure INT2/PB2 as input pin
+	MCUCSR |= (1 << ISC2);    // Trigger INT2 with the raising edge
+	GICR |= (1 << INT2);	// Enable external interrupt pin INT2
+
+	SREG |= (1 << 7);       // Enable interrupts by setting I-bit
+}
+
+static void INT2_Init_Raising(void) {
+	GICR &= ~(1 << INT2);
+	MCUCSR |= (1 << ISC2);    // Trigger INT2 with the raising edge
+	GICR |= (1 << INT2);
+}
+
+static void INT2_Init_Falling(void) {
+	GICR &= ~(1 << INT2);
+	MCUCSR &= ~(1 << ISC2);    // Trigger INT2 with the falling edge
+	GICR |= (1 << INT2);
+}
+
+void Icu_init() {
+
+	INT2_Init_Raising_FirstTime();
+	Timer2_init_normal_mode();
+
+}
+
+void ICU(void) {
+
+	//uint8 TIME=0;
+
+	if ((EXINT == 1) && (EDGE == 0)) {
+		INT2_Init_Falling();
+
+		TCNT2 = 0; //timer initial value
+
+		EDGE = 1;
+		EXINT = 0;
+	}
+
+	else if ((EXINT == 1) && (EDGE == 1)) {
+		uint8 TIME=TCNT2;
+
+		if (g_callBackPtr != NULL_PTR) {
+			(*g_callBackPtr)(TIME*128);  //TCNT2
+		}
+
+		INT2_Init_Raising();
+		EDGE = 0;
+		EXINT = 0;
+	}
+
 }

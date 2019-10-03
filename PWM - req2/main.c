@@ -3,7 +3,7 @@
  *
  * Created: 10/1/2019 9:51:26 AM
  * Author : omar sha3rawy
- */ 
+ */
 
 #include <avr/io.h>
 #include <util/delay.h>
@@ -22,24 +22,25 @@ void ULTRA_read(void (*ptr)(uint16));
 
 void obtscales_avoidence(uint16 dis)
 {
+
 	if (dis > 20)
 	{
 		Phase_Correct_PWM(60);
 		MOTOR_CarForward();
 		LCD_clear();
-		LCD_Write_Integer_Number(60);
+		LCD_Write_Integer_Number(dis);
 	}
-	else if (dis == 20)
+	else if (dis >= 18 && dis <= 22)
 	{
 		MOTOR_CarStop();
 		LCD_clear();
-		LCD_Write_Integer_Number(60);
+		LCD_Write_Integer_Number(dis);
 	}
-	else 
+	else
 	{
 		MOTOR_CarBackward();
 		LCD_clear();
-		LCD_Write_Integer_Number(60);
+		LCD_Write_Integer_Number(dis);
 	}
 }
 

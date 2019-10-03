@@ -267,7 +267,7 @@ uint8_t* integer_to_string(sint32 number, uint8_t *str, uint8_t base) {
 	return str;
 }
 
-void LCD_Write_Integer_Number(sint32 number) {
+void LCD_Write_Integer_Number(uint16 number) {
 	uint8_t str[16];
 	integer_to_string(number, str, 10);
 

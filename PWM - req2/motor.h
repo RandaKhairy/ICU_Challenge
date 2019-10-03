@@ -3,7 +3,7 @@
  *
  * Created: 10/2/2019 10:21:19 AM
  *  Author: omara
- */ 
+ */
 
 #ifndef MOTOR_H_
 #define MOTOR_H_
@@ -13,10 +13,11 @@
 #include <util/delay.h>
 #include "DIO.h"
 
-typedef enum{
+typedef enum
+{
 	PAIR1 = 0,
 	PAIR2 = 1
-	}motor_pairs;
+}motor_pairs;
 
 
 extern void MOTOR_CarForward();
